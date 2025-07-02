@@ -56,7 +56,7 @@ Stats for Lebron James across all seasons:
 524   22_23  LAL  55  28.9  8.3  6.8  0.9  0.6  3.2  0.3  0.8  0.5
 807   23_24  LAL  71  25.7  7.3  8.3  1.3  0.5  3.5  0.4  0.8  0.5
 1103  24_25  LAL  70  24.4  7.8  8.2  1.0  0.6  3.7  0.4  0.8  0.5
-
+```
 ## 🏆 Most Improved Player (MIP) Detector
 
 This module ranks the **Top 3 most improved players** for each season by comparing their performance to the previous year.
