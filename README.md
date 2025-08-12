@@ -63,13 +63,22 @@ FantasyScore = f(PTS, AST, TRB, STL, BLK, TOV)  # per-game normalized
 📤 Example Output:
 Best Value (Z-Score view)
 ```python
-📈 The 5 best value contracts for 2023–24 (Avg Z-Score: 0.85)
-• Player Name (SG) – Fantasy Score: 2.97, Salary: $5–10M → Z: 1.92
-```
+📈 The 5 best value contracts for 2025 (Avg Z-Score: -0.0) are:
+
+• Cade Cunningham (PG) – Fantasy Score: 2.29, Salary: $13.94M, Bracket: $5M–$15M → Z: 2.87
+• Jalen Brunson (PG) – Fantasy Score: 2.37, Salary: $24.96M, Bracket: $15M–$30M → Z: 2.7
+• Jalen Williams (SG) – Fantasy Score: 2.19, Salary: $4.78M, Bracket: <$5M → Z: 2.21
+• Austin Reaves (SG) – Fantasy Score: 2.1, Salary: $12.98M, Bracket: $5M–$15M → Z: 1.98
+• Christian Braun (SG) – Fantasy Score: 2.12, Salary: $3.09M, Bracket: <$5M → Z: 1.96
 Worst Value (Impact-per-Dollar)
 ```python
-📉 The 5 worst value contracts for 2023–24 (Avg Adjusted Score: 0.41)
-• Player Name (PF) – Fantasy Score: 2.1, Salary: $28.0M → Adjusted Value: 0.07
+📉 The 5 worst value contracts for 2024 (Avg Adjusted Score: 0.34) are:
+
+• Rudy Gobert (C) – Fantasy Score: 1.43, Salary: $41.0M → Adjusted Value: -1.35
+• Nikola Jovic (PF) – Fantasy Score: 1.75, Salary: $47.61M → Adjusted Value: -1.14
+• Klay Thompson (SF) – Fantasy Score: 1.71, Salary: $43.22M → Adjusted Value: -1.11
+• Clint Capela (C) – Fantasy Score: 1.23, Salary: $20.62M → Adjusted Value: -1.04
+• Tobias Harris (PF) – Fantasy Score: 1.83, Salary: $39.27M → Adjusted Value: -0.93
 ```
 
 ---
