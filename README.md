@@ -70,6 +70,7 @@ Best Value (Z-Score view)
 • Jalen Williams (SG) – Fantasy Score: 2.19, Salary: $4.78M, Bracket: <$5M → Z: 2.21
 • Austin Reaves (SG) – Fantasy Score: 2.1, Salary: $12.98M, Bracket: $5M–$15M → Z: 1.98
 • Christian Braun (SG) – Fantasy Score: 2.12, Salary: $3.09M, Bracket: <$5M → Z: 1.96
+```
 Worst Value (Impact-per-Dollar)
 ```python
 📉 The 5 worst value contracts for 2024 (Avg Adjusted Score: 0.34) are:
