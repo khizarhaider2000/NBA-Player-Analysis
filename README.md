@@ -7,10 +7,11 @@ It includes a player lookup tool, general statistical analysis, and a custom-bui
 
 ## 📁 Project Structure
 
-- `01_cleaned_data.ipynb` – Loads and cleans the raw NBA data
+- 'Salary_Value_Calculator.ipynb' – NEW: Finds undervalued players by comparing salary to performance
+- `MIP_Detector.ipynb` – Identifies the top 3 Most Improved Player (MIP) candidates per season using a custom stat formula
 - `Player_Stat_Lookup.ipynb` – Look up a player's stats by season or across all 5 years
 - `analysis.ipynb` – Explore league-wide trends like top scorers, correlations, and team averages
-- `MIP_Detector.ipynb` – Identifies the top 3 Most Improved Player (MIP) candidates per season using a custom stat formula
+- `01_cleaned_data.ipynb` – Loads and cleans the raw NBA data
 
 ---
 
