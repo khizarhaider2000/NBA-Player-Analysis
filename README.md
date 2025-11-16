@@ -26,6 +26,31 @@ It includes:
 - Analyze correlation between minutes played and point production
 - Calculate team-wise average stats
 - Search for a player and view detailed performance stats
+- Explore an **animated Salary vs. Fantasy Value frontier** (Plotly) saved in `figures/salary_value_frontier.html`
+
+---
+🌀 Salary vs. Fantasy Value Frontier (Animated)
+
+The `visualizations/value_vs_salary_animation.py` script builds an interactive Plotly scatter plot that animates across seasons to show how each player's fantasy impact compares to salary.
+
+How to view it:
+
+```bash
+python3 visualizations/value_vs_salary_animation.py  # regenerates the HTML if needed
+open figures/salary_value_frontier.html              # or double-click in Finder
+```
+
+What you'll see:
+- X-axis (log scale): salary in millions
+- Y-axis: custom Fantasy Value Score (position-weighted per-game stats)
+- Bubble size: games played (availability)
+- Color: value per $1M (hot colors = elite bang-for-buck)
+
+Use the season slider or play button to watch contract efficiency shift over time and hover any bubble to see the player/team breakdown.
+
+<p align="center">
+  <img src="figures/salary_value_frontier.gif" alt="Salary vs Fantasy Value Frontier preview" width="640">
+</p>
 
 ---
 🧮 Fantasy Value Calculator
@@ -141,5 +166,3 @@ Stats for Lebron James across all seasons:
 
 📊 Dataset
 The dataset consists of NBA player season stats for the 2021 to 2025 seasons, gathered from Basketball Reference and cleaned manually. It includes over 30 columns covering scoring, defense, efficiency, and team data.
-
-
