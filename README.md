@@ -136,6 +136,10 @@ The script saves `figures/top_contracts_<season>.png`, which displays:
 - Right chart: the 10 lowest value-per-dollar contracts (sorted from bad to worst)
 - Clean axes and shared units so viewers instantly see the spread between bargain bins and costly deals
 
+<p align="center">
+  <img src="figures/top_contracts_2025.png" alt="Top 10 Best vs Worst Contracts (2025)" width="720">
+</p>
+
 Drop the PNG into presentations or a portfolio page to highlight how each franchise allocates salary relative to impact.
 
 ## 🧪 Example Usage
