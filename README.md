@@ -26,32 +26,7 @@ It includes:
 - Analyze correlation between minutes played and point production
 - Calculate team-wise average stats
 - Search for a player and view detailed performance stats
-- Explore an **animated Salary vs. Fantasy Value frontier** (Plotly) saved in `figures/salary_value_frontier.html`
-
----
-🌀 Salary vs. Fantasy Value Frontier (Animated)
-
-The `visualizations/value_vs_salary_animation.py` script builds an interactive Plotly scatter plot that animates across seasons to show how each player's fantasy impact compares to salary.
-
-How to view it:
-
-```bash
-python3 visualizations/value_vs_salary_animation.py  # regenerates the HTML if needed
-open figures/salary_value_frontier.html              # or double-click in Finder
-```
-
-What you'll see:
-- X-axis (log scale): salary in millions
-- Y-axis: custom Fantasy Value Score (position-weighted per-game stats)
-- Bubble size: games played (availability)
-- Color: value per $1M (hot colors = elite bang-for-buck)
-
-Use the season slider or play button to watch contract efficiency shift over time and hover any bubble to see the player/team breakdown.
-
-<p align="center">
-  <img src="figures/salary_value_frontier.gif" alt="Salary vs Fantasy Value Frontier preview" width="640">
-</p>
-
+- Visualize Top 10 best-vs-worst contracts in any season with side-by-side bar charts
 ---
 🧮 Fantasy Value Calculator
 This module ranks NBA players by how much on-court impact you get per dollar of salary.
@@ -143,6 +118,25 @@ Games Played (G), Points (PTS), Rebounds (TRB) ,Assists (AST), Steals (STL), Blo
 This is a simple, beginner-friendly way to interact with the dataset and explore individual player performances directly from the terminal.
 
 ---
+
+## Top 10 Best vs Worst Contracts
+
+`visualizations/top_contracts_bar_charts.py` reuses the Fantasy Value Score, converts it to value-per-$1M, and ranks the biggest bargains and the priciest underperformers.
+
+Generate the plot (example season 2025):
+
+```bash
+python3 visualizations/top_contracts_bar_charts.py      # defaults to season=2025
+# or import plot_best_vs_worst and pass season=2023, top_n=10
+```
+
+The script saves `figures/top_contracts_<season>.png`, which displays:
+
+- Left chart: the 10 highest fantasy value-per-dollar players (bars colored by team, sorted best-to-worst)
+- Right chart: the 10 lowest value-per-dollar contracts (sorted from bad to worst)
+- Clean axes and shared units so viewers instantly see the spread between bargain bins and costly deals
+
+Drop the PNG into presentations or a portfolio page to highlight how each franchise allocates salary relative to impact.
 
 ## 🧪 Example Usage
 
