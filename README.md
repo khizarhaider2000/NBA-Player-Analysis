@@ -1,18 +1,42 @@
-# 🏀 NBA Player Stats Analyzer
+# NBA Player Stats Analyzer
 
-This project explores and analyzes NBA player statistics over the past 5 seasons (2021–2025) using Python, Pandas, and Matplotlib. 
-It includes:
-- A **Fantasy Value Calculator** to find the best/worst contracts relative to player performance
-- A **Most Improved Player (MIP) Detector**
-- A **Player Stat Lookup Tool**
-- League-wide analysis tools for trends, correlations, and averages
+NBA analytics project for exploring player season performance, leaderboards, custom impact metrics, Most Improved Player candidates, fantasy rankings, and player comparisons.
 
----
+The project started as a CSV/Pandas notebook workflow and now includes a SQL-backed FastAPI backend using PostgreSQL, SQLAlchemy, and NBA API data loaded through an ETL pipeline. Legacy notebooks and visualizations are preserved for reference while the backend provides reusable API endpoints for future frontend integration.
 
-## 📁 Project Structure
+## Current Stack
+
+- Python
+- Pandas
+- PostgreSQL
+- FastAPI
+- SQLAlchemy
+- NBA API
+- Matplotlib
+
+## Project Structure
 
 ```text
 nba-stats-analyzer/
+├── backend/
+│   └── app/
+│       ├── main.py
+│       ├── database.py
+│       ├── routers/
+│       │   ├── players.py
+│       │   ├── leaderboards.py
+│       │   ├── analytics.py
+│       │   └── comparisons.py
+│       ├── services/
+│       │   ├── player_service.py
+│       │   ├── leaderboard_service.py
+│       │   ├── analytics_service.py
+│       │   └── comparison_service.py
+│       ├── utils/
+│       │   ├── metrics.py
+│       │   └── helpers.py
+│       └── etl/
+│           └── load_nba_api_to_db.py
 ├── legacy/
 │   ├── 01_cleaned_data.ipynb
 │   ├── analysis.ipynb
@@ -21,173 +45,201 @@ nba-stats-analyzer/
 │   └── Player_Stat_Lookup.ipynb
 ├── data/
 │   ├── raw/
-│   │   ├── 20_21.csv
-│   │   ├── 21_22.csv
-│   │   ├── 22_23.csv
-│   │   ├── 23_24.csv
-│   │   ├── 24_25.csv
-│   │   └── NBA_Contracts.csv
 │   └── processed/
-│       ├── NBA_Combined.csv
-│       ├── NBA_Cleaned.csv
-│       ├── Merged_NBA_Data.csv
-│       └── Final_NBA_Data.csv
 ├── visualizations/
 │   ├── figures/
-│   │   └── top_contracts_2025.png
 │   └── top_contracts_bar_charts.py
 └── README.md
 ```
 
-- `legacy/` – Existing notebooks and analysis workflows preserved from the original project.
-- `data/raw/` – Original season CSVs and contract salary source data.
-- `data/processed/` – Generated, cleaned, merged, and final analysis-ready CSV outputs.
-- `visualizations/` – Existing visualization script and generated chart image.
----
+## Backend Architecture
 
-## 🔍 Features
+The FastAPI backend is organized around thin routers and reusable service modules:
 
-- Rank best and worst NBA contracts using the **Fantasy Value Calculator** (performance vs. salary)
-- Identify MIP candidates using a custom-built **Impact Score**
-- View top scorers, rebounders, and assist leaders by season
-- Analyze correlation between minutes played and point production
-- Calculate team-wise average stats
-- Search for a player and view detailed performance stats
-- Visualize Top 10 best-vs-worst contracts in any season with side-by-side bar charts
----
-🧮 Fantasy Value Calculator
-This module ranks NBA players by how much on-court impact you get per dollar of salary.
-It produces season-by-season leaderboards for:
+- `main.py` registers the API routes and exposes `/health`.
+- `database.py` owns the PostgreSQL SQLAlchemy engine.
+- `routers/` contains endpoint definitions.
+- `services/` contains SQL-backed business logic.
+- `utils/metrics.py` centralizes impact score and fantasy score formulas.
+- `utils/helpers.py` contains shared query/serialization helpers.
+- `etl/load_nba_api_to_db.py` pulls player season stats from `nba_api`, cleans the data, calculates shooting metrics, and loads PostgreSQL.
 
-📈 Best value contracts – Players outperforming their pay grade
+The primary database table is:
 
-📉 Worst value contracts – Players underperforming relative to salary
-
-📐 Fantasy Value Score Formula:
-```python
-FantasyScore = f(PTS, AST, TRB, STL, BLK, TOV)  # per-game normalized
-```
-- Uses per-game rates from core box stats
-- Penalizes turnovers
-- Filters out players with G ≤ 55 or very low availability
-📊 Ranking Logic:
-1) Bracketed Z-Score View (Best Value)
-   - Groups players into salary tiers (e.g., <$2M, $2–5M, $5–10M, $10–15M, $15–30M, >$30M)
-   - Within each tier, computes Z-scores for FantasyScore
-   - Ranks Top 5 per season in each tier
-
-2) Impact-per-Dollar View (Worst Value)
-   - Normalizes FantasyScore by salary (millions) → AdjustedValue
-   - Ranks Bottom 5 per season by efficiency
-
-🧠 Design Choices:
-- Fair comparisons – Salary tiers prevent penalizing high earners simply for being expensive
-- Bang-for-buck – AdjustedValue view highlights breakout cheap players & overpriced veterans
-- Availability guardrails – Removes small-sample flukes from low-game seasons
-- Per-game normalization – Removes bias from differences in minutes or pace
-- Season reset – Rankings are recalculated fresh each season
-
-📤 Example Output:
-Best Value (Z-Score view)
-```python
-📈 The 5 best value contracts for 2025 (Avg Z-Score: -0.0) are:
-
-• Cade Cunningham (PG) – Fantasy Score: 2.29, Salary: $13.94M, Bracket: $5M–$15M → Z: 2.87
-• Jalen Brunson (PG) – Fantasy Score: 2.37, Salary: $24.96M, Bracket: $15M–$30M → Z: 2.7
-• Jalen Williams (SG) – Fantasy Score: 2.19, Salary: $4.78M, Bracket: <$5M → Z: 2.21
-• Austin Reaves (SG) – Fantasy Score: 2.1, Salary: $12.98M, Bracket: $5M–$15M → Z: 1.98
-• Christian Braun (SG) – Fantasy Score: 2.12, Salary: $3.09M, Bracket: <$5M → Z: 1.96
-```
-Worst Value (Impact-per-Dollar)
-```python
-📉 The 5 worst value contracts for 2024 (Avg Adjusted Score: 0.34) are:
-
-• Rudy Gobert (C) – Fantasy Score: 1.43, Salary: $41.0M → Adjusted Value: -1.35
-• Nikola Jovic (PF) – Fantasy Score: 1.75, Salary: $47.61M → Adjusted Value: -1.14
-• Klay Thompson (SF) – Fantasy Score: 1.71, Salary: $43.22M → Adjusted Value: -1.11
-• Clint Capela (C) – Fantasy Score: 1.23, Salary: $20.62M → Adjusted Value: -1.04
-• Tobias Harris (PF) – Fantasy Score: 1.83, Salary: $39.27M → Adjusted Value: -0.93
+```text
+player_season_stats_raw
 ```
 
----
-## 🏆 Most Improved Player (MIP) Detector
+Key columns include:
 
-This module ranks the **Top 3 most improved players** for each season by comparing their performance to the previous year.
-
-### 📐 Custom Impact Score Formula:
-```python
-Impact = PTS + TRB + AST + STL + BLK - TOV + 2 × (3P% + FT% + FG%)
+```text
+season, player_name, age, team, games, minutes_per_game,
+fg, fga, fg_pct, three_p, three_pa, three_pct,
+two_p, two_pa, two_pct, efg_pct,
+ft, fta, ft_pct, orb, drb, trb,
+ast, stl, blk, tov, pf, pts
 ```
-This score rewards overall performance while penalizing turnovers. Shooting efficiency stats are double-weighted to emphasize quality scoring.
 
-📊 MIP Selection Logic:
-Calculate the Impact Score for every player each season
+## API Endpoints
 
-Compute the year-over-year difference in Impact using groupby().diff()
+### Health
 
-Filter for players with at least 55 games played in both the current and previous season
+```http
+GET /health
+```
 
-Rank players by Impact improvement and display the top 3 for each season
----
+### Players
 
-🔎 Player Stat Lookup Tool
-This script allows users to search for any NBA player and view their performance stats by season or across all five years (2021–2025).
+```http
+GET /players/search?name=lebron
+GET /players/search?name=lebron&season=2024-25&limit=10
+GET /players/profile?name=LeBron James
+GET /players/profile?name=LeBron James&season=2024-25
+GET /players/history?name=LeBron James
+GET /players/compare?player_one=LeBron James&player_two=Stephen Curry&season=2024-25
+```
 
-🧰 How It Works:
-Prompts the user to enter a player's name (case-insensitive)
+### Leaderboards
 
-Then prompts for a specific season (e.g., 2023) or "All" for a 5-year view
+```http
+GET /leaderboards/points?season=2024-25
+GET /leaderboards/rebounds?season=2024-25
+GET /leaderboards/assists?season=2024-25
+GET /leaderboards/steals?season=2024-25
+GET /leaderboards/blocks?season=2024-25
+GET /leaderboards/turnovers?season=2024-25
+GET /leaderboards/fg-pct?season=2024-25
+GET /leaderboards/three-pct?season=2024-25
+GET /leaderboards/ft-pct?season=2024-25
+GET /leaderboards/efg?season=2024-25
+```
 
-Displays key stats such as:
+All leaderboard endpoints accept an optional `limit` query parameter:
 
-Games Played (G), Points (PTS), Rebounds (TRB) ,Assists (AST), Steals (STL), Blocks (BLK), Turnovers (TOV), 3P%, FT%, FG%
+```http
+GET /leaderboards/points?season=2024-25&limit=25
+```
 
-This is a simple, beginner-friendly way to interact with the dataset and explore individual player performances directly from the terminal.
+### Analytics
 
----
+```http
+GET /analytics/impact-score?season=2024-25
+GET /analytics/mip
+GET /analytics/fantasy-rankings?season=2024-25
+```
 
-## Top 10 Best vs Worst Contracts
+Analytics endpoints also accept optional `limit` parameters:
 
-`visualizations/top_contracts_bar_charts.py` reuses the Fantasy Value Score, converts it to value-per-$1M, and ranks the biggest bargains and the priciest underperformers.
+```http
+GET /analytics/mip?limit=10
+GET /analytics/fantasy-rankings?season=2024-25&limit=50
+```
 
-Generate the plot (example season 2025):
+## Metrics
+
+Custom formulas are centralized in `backend/app/utils/metrics.py`.
+
+Impact score:
+
+```python
+impact_score = (
+    pts
+    + trb * 1.2
+    + ast * 1.5
+    + stl * 3.0
+    + blk * 3.0
+    + efg_pct * 10.0
+    - tov * 1.5
+)
+```
+
+Fantasy score:
+
+```python
+fantasy_score = (
+    pts
+    + trb * 1.2
+    + ast * 1.5
+    + stl * 3.0
+    + blk * 3.0
+    - tov
+)
+```
+
+Most Improved Player detection compares impact score changes across consecutive seasons using SQL window functions.
+
+## Running the Backend
+
+Create and activate a virtual environment, then install the project dependencies used by the backend:
 
 ```bash
-python3 visualizations/top_contracts_bar_charts.py      # defaults to season=2025
-# or import plot_best_vs_worst and pass season=2023, top_n=10
+python3 -m venv .venv
+source .venv/bin/activate
+pip install fastapi uvicorn sqlalchemy psycopg2-binary pandas nba_api
 ```
 
-The script saves `visualizations/figures/top_contracts_<season>.png`, which displays:
+Start PostgreSQL and make sure this database exists:
 
-- Left chart: the 10 highest fantasy value-per-dollar players (bars colored by team, sorted best-to-worst)
-- Right chart: the 10 lowest value-per-dollar contracts (sorted from bad to worst)
-- Clean axes and shared units so viewers instantly see the spread between bargain bins and costly deals
+```text
+nba_stats_db
+```
 
-<p align="center">
-  <img src="visualizations/figures/top_contracts_2025.png" alt="Top 10 Best vs Worst Contracts (2025)" width="720">
-</p>
+The current database connection is defined in `backend/app/database.py`:
 
-Drop the PNG into presentations or a portfolio page to highlight how each franchise allocates salary relative to impact.
+```python
+DATABASE_URL = "postgresql://localhost:5432/nba_stats_db"
+```
 
-## 🧪 Example Usage
+Load or refresh NBA API data:
 
 ```bash
-> legacy/Player_Stat_Lookup.ipynb
-Welcome to NBA Stat Lookup
-Enter the player's name: lebron james
-Which season would you like to view the stats for? ['2021', '2022', '2023', '2024', '2025']
-If you would like to see average of 5 years, type 'All': all
-
-Stats for Lebron James across all seasons:
-
-     Season Team   G   PTS  TRB  AST  STL  BLK  TOV  3P%  FT%  FG%
-11    20_21  LAL  45  25.0  7.7  7.8  1.1  0.6  3.7  0.4  0.7  0.5
-259   21_22  LAL  56  30.3  8.2  6.2  1.3  1.1  3.5  0.4  0.8  0.5
-524   22_23  LAL  55  28.9  8.3  6.8  0.9  0.6  3.2  0.3  0.8  0.5
-807   23_24  LAL  71  25.7  7.3  8.3  1.3  0.5  3.5  0.4  0.8  0.5
-1103  24_25  LAL  70  24.4  7.8  8.2  1.0  0.6  3.7  0.4  0.8  0.5
+python backend/app/etl/load_nba_api_to_db.py
 ```
 
+Run the FastAPI server:
 
-📊 Dataset
-The dataset consists of NBA player season stats for the 2021 to 2025 seasons, gathered from Basketball Reference and cleaned manually. It includes over 30 columns covering scoring, defense, efficiency, and team data.
+```bash
+uvicorn backend.app.main:app --reload
+```
+
+Open the interactive API docs:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+## Legacy Notebook Features
+
+The `legacy/` folder preserves the original CSV/Pandas workflows:
+
+- Fantasy Value Calculator
+- Most Improved Player Detector
+- Player Stat Lookup Tool
+- League-wide trends, correlations, and averages
+- Multi-season CSV cleaning and combining
+
+These notebooks are useful references for validating or expanding the SQL-backed API.
+
+## Visualizations
+
+`visualizations/top_contracts_bar_charts.py` generates side-by-side charts for top value contracts and worst value contracts.
+
+Run:
+
+```bash
+python3 visualizations/top_contracts_bar_charts.py
+```
+
+The script saves charts under:
+
+```text
+visualizations/figures/
+```
+
+## Development Notes
+
+- Existing working endpoints were preserved and extended.
+- SQL queries are preferred for backend analytics instead of loading large datasets into Pandas at request time.
+- Routers should stay thin; reusable logic belongs in `services/`.
+- Metric formulas should stay centralized in `utils/metrics.py`.
+- The API is structured for future React integration, but this repository currently focuses only on backend analytics and data workflows.
