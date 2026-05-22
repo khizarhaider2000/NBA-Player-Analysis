@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-DATA_PATH = Path("Final_NBA_Data.csv")
-OUTPUT_DIR = Path("figures")
+DATA_PATH = Path("data/processed/Final_NBA_Data.csv")
+OUTPUT_DIR = Path("visualizations/figures")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 

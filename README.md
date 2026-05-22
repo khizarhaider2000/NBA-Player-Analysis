@@ -9,13 +9,40 @@ It includes:
 
 ---
 
-## 📁 Project Structure (Impact-First Order)
+## 📁 Project Structure
 
-- `Salary_Value_Calculator.ipynb` – Ranks players by value (performance vs. salary) using two complementary methods  
-- `MIP_Detector.ipynb` – Identifies the Top 3 Most Improved Players per season using a custom stat formula  
-- `Player_Stat_Lookup.ipynb` – Search for any player's stats by season or across all 5 years  
-- `analysis.ipynb` – Explore league-wide trends like top scorers, correlations, and team averages  
-- `01_cleaned_data.ipynb` – Loads and cleans the raw NBA data
+```text
+nba-stats-analyzer/
+├── legacy/
+│   ├── 01_cleaned_data.ipynb
+│   ├── analysis.ipynb
+│   ├── Fantasy_Value_Calculator.ipynb
+│   ├── MIP_Detector.ipynb
+│   └── Player_Stat_Lookup.ipynb
+├── data/
+│   ├── raw/
+│   │   ├── 20_21.csv
+│   │   ├── 21_22.csv
+│   │   ├── 22_23.csv
+│   │   ├── 23_24.csv
+│   │   ├── 24_25.csv
+│   │   └── NBA_Contracts.csv
+│   └── processed/
+│       ├── NBA_Combined.csv
+│       ├── NBA_Cleaned.csv
+│       ├── Merged_NBA_Data.csv
+│       └── Final_NBA_Data.csv
+├── visualizations/
+│   ├── figures/
+│   │   └── top_contracts_2025.png
+│   └── top_contracts_bar_charts.py
+└── README.md
+```
+
+- `legacy/` – Existing notebooks and analysis workflows preserved from the original project.
+- `data/raw/` – Original season CSVs and contract salary source data.
+- `data/processed/` – Generated, cleaned, merged, and final analysis-ready CSV outputs.
+- `visualizations/` – Existing visualization script and generated chart image.
 ---
 
 ## 🔍 Features
@@ -130,14 +157,14 @@ python3 visualizations/top_contracts_bar_charts.py      # defaults to season=202
 # or import plot_best_vs_worst and pass season=2023, top_n=10
 ```
 
-The script saves `figures/top_contracts_<season>.png`, which displays:
+The script saves `visualizations/figures/top_contracts_<season>.png`, which displays:
 
 - Left chart: the 10 highest fantasy value-per-dollar players (bars colored by team, sorted best-to-worst)
 - Right chart: the 10 lowest value-per-dollar contracts (sorted from bad to worst)
 - Clean axes and shared units so viewers instantly see the spread between bargain bins and costly deals
 
 <p align="center">
-  <img src="figures/top_contracts_2025.png" alt="Top 10 Best vs Worst Contracts (2025)" width="720">
+  <img src="visualizations/figures/top_contracts_2025.png" alt="Top 10 Best vs Worst Contracts (2025)" width="720">
 </p>
 
 Drop the PNG into presentations or a portfolio page to highlight how each franchise allocates salary relative to impact.
@@ -145,7 +172,7 @@ Drop the PNG into presentations or a portfolio page to highlight how each franch
 ## 🧪 Example Usage
 
 ```bash
-> python Player_Stat_Lookup.py
+> legacy/Player_Stat_Lookup.ipynb
 Welcome to NBA Stat Lookup
 Enter the player's name: lebron james
 Which season would you like to view the stats for? ['2021', '2022', '2023', '2024', '2025']
