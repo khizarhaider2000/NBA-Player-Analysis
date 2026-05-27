@@ -1,4 +1,4 @@
-# NBA Player Stats Analyzer
+# HoopIQ
 
 NBA analytics project for exploring player season performance, leaderboards, custom impact metrics, Most Improved Player candidates, fantasy rankings, and player comparisons.
 
